@@ -5,8 +5,6 @@
     <title>Users</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <style>
@@ -39,7 +37,6 @@
                       -- 'item-key' fait référence à une valeur unique de l'objet (l'uuid)
                       -->
                     <v-data-table
-                            v-model="selected"
                             :headers="headers"
                             :items="users"
                             item-key="uuid"
@@ -137,7 +134,6 @@
                             item: null // Valeurs par défaut
                         }
                     },
-                    selected: [],
                     genders: ['Homme', 'Femme'], // Liste des genres
                     headers: [ // Colonnes à afficher sur le tableau
                         { text: 'UUID', value: 'uuid' },
@@ -161,7 +157,7 @@
             },
             methods: {
                 openAddEdit(item = {}) {
-                    this.dialog.add.item = item;
+                    this.dialog.add.item = Object.assign({}, item); // on copie l'objet
                     this.dialog.add.show = true;
                 },
                 closeAdd() {
@@ -170,8 +166,16 @@
                 confirmAdd() {
                     const user = this.dialog.add.item;
                     if (user.uuid === undefined) {
-                        user.uuid = uuidv4();
-                        this.users.push(user);
+                        user.uuid = uuidv4(); // On génère un uuid
+                        this.users.push(user); // on l'ajoute à la liste
+                    } else {
+                        const searchUser = this.users.filter(x => x.uuid === user.uuid)[0]; // On recherche l'utilisateur
+                        if (searchUser !== undefined) {
+                            searchUser.firstname = user.firstname;
+                            searchUser.lastname = user.lastname;
+                            searchUser.email = user.email;
+                            searchUser.gender = user.gender;
+                        }
                     }
                     this.closeAdd();
                 },
