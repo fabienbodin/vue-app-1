@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="main" v-cloak>
+        <v-app>
+            <v-main>
+                <v-container>
+                    Gestion des utilisateurs
+
+                    <!-- Vuetify va faire l'itération seul grâce à v-data-table.
+                      -- 'v-model' correspond aux items sélectionnés.
+                      -- 'headers' fait références aux colonnes à afficher
+                      -- 'items' = les données
+                      -- 'item-key' fait référence à une valeur unique de l'objet (l'uuid)
+                      -->
+                    <v-data-table
+                            v-model="selected"
+                            :headers="headers"
+                            :items="users"
+                            item-key="uuid"
+                            show-select
+                            class="elevation-1"
+                    >
+                        <template v-slot:item.actions="{ item }">
+                            <v-icon small class="mr-2">mdi-pencil</v-icon>
+                            <v-icon small>mdi-delete</v-icon>
+                        </template>
+                    </v-data-table>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: '#main',
+            vuetify: new Vuetify(),
+            data: {
+                dialog: {
+                    delete: false
+                },
+                selected: [],
+                headers: [
+                    { text: 'UUID', value: 'uuid' },
+                    { text: 'Prénom', value: 'firstname' },
+                    { text: 'Nom', value: 'lastname' },
+                    { text: 'Adresse e-mail', value: 'email' },
+                    { text: 'Genre', value: 'gender' },
+                    { text: 'Actions', value: 'actions' }
+                ],
+                users: [
+                    { uuid: uuidv4(), firstname: "John", lastname: "Doe", email: "john.doe@unknown.com", gender: "Homme" }
+                ]
+            }
+        });
+    </script>
+</body>
+</html>
