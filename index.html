@@ -13,6 +13,10 @@
         [v-cloak] {
             display: none;
         }
+        * {
+            margin:0;
+            padding:0;
+        }
     </style>
 </head>
 <body>
@@ -38,10 +42,26 @@
                     >
                         <template v-slot:item.actions="{ item }">
                             <v-icon small class="mr-2">mdi-pencil</v-icon>
-                            <v-icon small>mdi-delete</v-icon>
+                            <v-icon small @click="openRemove(item)">mdi-delete</v-icon>
                         </template>
                     </v-data-table>
                 </v-container>
+
+                <!-- Contenu des dialogs -->
+                <v-row justify="center">
+                    <!-- Boîte de dialog pour la suppression -->
+                    <v-dialog v-model="dialog.delete.show" max-width="340">
+                        <v-card>
+                            <v-card-title class="headline" style="word-break: unset">Voulez-vous vraiment supprimer cet utilisateur?</v-card-title>
+                            <v-card-text>Cette action est irréversible.</v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn class="ma-2" color="darken-1" outlined @click="closeRemove()">Annuler</v-btn>
+                                <v-btn class="ma-2" color="indigo darken-1" outlined @click="confirmRemove()">OK</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-row>
             </v-main>
         </v-app>
     </div>
@@ -53,22 +73,40 @@
         new Vue({
             el: '#main',
             vuetify: new Vuetify(),
-            data: {
-                dialog: {
-                    delete: false
+            data() {
+                return {
+                    dialog: {
+                        delete: {
+                            show: false,
+                            item: null
+                        }
+                    },
+                    selected: [],
+                    headers: [
+                        { text: 'UUID', value: 'uuid' },
+                        { text: 'Prénom', value: 'firstname' },
+                        { text: 'Nom', value: 'lastname' },
+                        { text: 'Adresse e-mail', value: 'email' },
+                        { text: 'Genre', value: 'gender' },
+                        { text: 'Actions', value: 'actions' }
+                    ],
+                    users: [
+                        { uuid: uuidv4(), firstname: "John", lastname: "Doe", email: "john.doe@unknown.com", gender: "Homme" }
+                    ]
+                }
+            },
+            methods: {
+                openRemove(item) {
+                    this.dialog.delete.item = item;
+                    this.dialog.delete.show = true;
                 },
-                selected: [],
-                headers: [
-                    { text: 'UUID', value: 'uuid' },
-                    { text: 'Prénom', value: 'firstname' },
-                    { text: 'Nom', value: 'lastname' },
-                    { text: 'Adresse e-mail', value: 'email' },
-                    { text: 'Genre', value: 'gender' },
-                    { text: 'Actions', value: 'actions' }
-                ],
-                users: [
-                    { uuid: uuidv4(), firstname: "John", lastname: "Doe", email: "john.doe@unknown.com", gender: "Homme" }
-                ]
+                closeRemove() {
+                    this.dialog.delete.show = false;
+                },
+                confirmRemove() {
+                    this.users.splice(this.dialog.delete.item, 1);
+                    this.closeRemove();
+                },
             }
         });
     </script>
