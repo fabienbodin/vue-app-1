@@ -66,7 +66,7 @@
                     <!-- Boîte de dialog pour l'ajout et l'edit -->
                     <v-dialog v-model="dialog.add.show" max-width="450">
                         <v-card>
-                            <v-card-title class="headline" style="word-break: unset">Nouvel utilisateur</v-card-title>
+                            <v-card-title class="headline" style="word-break: unset">{{ (dialog.add.item.uuid !== undefined) ? 'Modifier l\'' : 'Nouvel ' }}utilisateur</v-card-title>
                             <v-form ref="addForm">
                                 <v-container>
                                     <v-row>
@@ -122,12 +122,11 @@
         new Vue({
             el: '#main',
             vuetify: new Vuetify(),
-            data() {
-                return {
+            data: {
                     dialog: {
                         add: {
                             show: false, // Le dialog est caché
-                            item: {} // Valeurs par défaut
+                            item: {}, // Valeurs par défaut
                         },
                         delete: {
                             show: false, // Le dialog est caché
@@ -153,7 +152,6 @@
                         { uuid: uuidv4(), firstname: "Jimmy", lastname: "Carroll", email: "jimmy.carroll@unknown.com", gender: "Homme" },
                         { uuid: uuidv4(), firstname: "Sarah", lastname: "Robinson", email: "sarah.robinson@unknown.com", gender: "Femme" },
                     ]
-                }
             },
             methods: {
                 openAddEdit(item = {}) {
